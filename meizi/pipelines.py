@@ -27,6 +27,21 @@ class ImageDownloadPipeline(ImagesPipeline):
         'Accept - Encoding': 'gzip, deflate, sdch',
     }
 
+    # http://blog.csdn.net/php_fly/article/details/19688595
+    # file path 使用
+    def file_path(self, request, response=None, info=None):
+        dir_path = '%s' % (settings.IMAGES_STORE)
+        # 建立目录名字和项目名称一致
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+        us = request.url.split('/')[3:]
+        print("-------us is %s------------ ", us)
+        image_file_name = '_'.join(us)
+        file_path = '%s/%s' % (dir_path, image_file_name)
+        print('------file path is %s-------' % (file_path))
+        return file_path
+
+
     def get_media_requests(self, item, info):
         for image_url in item['image_urls']:
             yield scrapy.Request(image_url,headers = self.default_headers)

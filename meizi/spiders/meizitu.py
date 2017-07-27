@@ -17,11 +17,15 @@ class MeiziSpider(scrapy.Spider):
         # sel是页面源代码，载入scrapy.selector
         sel = Selector(response)
         # 每个连接，用@href属性
+        count = 0;
         for link in sel.xpath('//h2/a/@href').extract():
             # 请求=Request(连接，parese_item)
-            # print(link)
-            request = scrapy.Request(link, callback=self.parse_item)
-            yield request  # 返回请求
+            if(count < 1) :
+                print('--------------------------------------current link is %s -------------------------'%(link))
+                request = scrapy.Request(link, callback=self.parse_item)
+                count = count + 1
+                yield request  # 返回请求
+
         # # 获取页码集合
         # pages = sel.xpath('//*[@id="wp_page_numbers"]/ul/li/a/@href').extract()
         # print('pages: %s' % pages)  # 打印页码

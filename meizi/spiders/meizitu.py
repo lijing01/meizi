@@ -13,6 +13,15 @@ class MeiziSpider(scrapy.Spider):
         'http://www.meizitu.com/',
     )
 
+    default_headers = {
+        'Host': 'mm.howkuai.com',
+        'Connection': 'keep - alive',
+        'Upgrade - Insecure - Requests': '1',
+        'User-Agent': 'Mozilla / 5.0(Windows NT 10.0;Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 58.0 .3029.110 Safari / 537.36',
+        'Accept': 'text / html, application / xhtml + xml, application / xml;q = 0.9, image / webp, * / *;q = 0.8',
+        'Accept-Encoding': 'gzip, deflate, sdch',
+    }
+
     def parse(self, response):
         # sel是页面源代码，载入scrapy.selector
         sel = Selector(response)
@@ -20,6 +29,7 @@ class MeiziSpider(scrapy.Spider):
         count = 0;
         for link in sel.xpath('//h2/a/@href').extract():
             # 请求=Request(连接，parese_item)
+            # 测试代码只抓取一页，避免ip 被ban
             if(count < 1) :
                 print('--------------------------------------current link is %s -------------------------'%(link))
                 request = scrapy.Request(link, callback=self.parse_item)

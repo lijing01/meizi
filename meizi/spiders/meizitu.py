@@ -14,13 +14,14 @@ class MeiziSpider(scrapy.Spider):
     )
 
     default_headers = {
-        'Host': 'mm.howkuai.com',
-        'Connection': 'keep - alive',
-        'Upgrade - Insecure - Requests': '1',
-        'User-Agent': 'Mozilla / 5.0(Windows NT 10.0;Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 58.0 .3029.110 Safari / 537.36',
-        'Accept': 'text / html, application / xhtml + xml, application / xml;q = 0.9, image / webp, * / *;q = 0.8',
+        'Host': 'www.meizitu.com',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, sdch',
     }
+
 
     def parse(self, response):
         # sel是页面源代码，载入scrapy.selector
@@ -32,7 +33,7 @@ class MeiziSpider(scrapy.Spider):
             # 测试代码只抓取一页，避免ip 被ban
             if(count < 1) :
                 print('--------------------------------------current link is %s -------------------------'%(link))
-                request = scrapy.Request(link, callback=self.parse_item)
+                request = scrapy.Request(link, callback=self.parse_item,headers=self.default_headers)
                 count = count + 1
                 yield request  # 返回请求
 

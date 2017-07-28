@@ -22,7 +22,6 @@ class MeiziSpider(scrapy.Spider):
         'Accept-Encoding': 'gzip, deflate, sdch',
     }
 
-
     def parse(self, response):
         # sel是页面源代码，载入scrapy.selector
         sel = Selector(response)
@@ -33,7 +32,7 @@ class MeiziSpider(scrapy.Spider):
             # 测试代码只抓取一页，避免ip 被ban
             if(count < 1) :
                 print('--------------------------------------current link is %s -------------------------'%(link))
-                request = scrapy.Request(link, callback=self.parse_item,headers=self.default_headers)
+                request = scrapy.Request(link, callback=self.parse_item)
                 count = count + 1
                 yield request  # 返回请求
 

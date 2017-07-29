@@ -16,3 +16,9 @@ class MeizituItem(scrapy.Item):
     image_urls = scrapy.Field()
     images = scrapy.Field()
     image_paths = scrapy.Field()
+
+
+class XiciItem(scrapy.Item):
+    ip = scrapy.Field()
+    port = scrapy.Field()
+    scheme = scrapy.Field()

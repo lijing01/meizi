@@ -67,6 +67,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
    # 'meizi.pipelines.MeiziPipeline': 300,
      'meizi.pipelines.ImageDownloadPipeline': 300,
+     'meizi.pipelines.ProxyDBPipeline': 1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -94,3 +95,9 @@ ITEM_PIPELINES = {
 IMAGES_STORE = './meizitu'
 
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
+#MYSQL 配置
+MYSQL_HOST = 'localhost'
+MYSQL_DBNAME = 'spider'
+MYSQL_USER = 'root'
+MYSQL_PASSWD = '123321'

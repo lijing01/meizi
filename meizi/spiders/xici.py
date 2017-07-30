@@ -20,9 +20,13 @@ class XiciSpider(scrapy.Spider):
         sel = Selector(response)
         table = sel.xpath('//table[@id="ip_list"]')[0]
         trs = table.xpath("//tr")[1:]
+        items = []  # 定义items空集
         for tr in trs:
             item = XiciItem()
             item['ip'] = tr.xpath("td[2]/text()").extract()[0]
             item['port'] = tr.xpath("td[3]/text()").extract()[0]
             item['scheme'] = tr.xpath("td[6]/text()").extract()[0]
-            print('--- xici item is %s://%s:%s  ----'%(item['scheme'],item['ip'],item['port']))
+            items.append(item)
+            # print('--- xici item is %s://%s:%s  ----'%(item['scheme'],item['ip'],item['port']))
+
+        return items

@@ -11,6 +11,10 @@ from meizi import settings
 from scrapy.pipelines.images import ImagesPipeline
 import scrapy
 from scrapy.exceptions import DropItem
+import pymysql
+
+from meizi.items import XiciItem, MeizituItem
+
 
 class MeiziPipeline(object):
     def process_item(self, item, spider):
@@ -43,12 +47,39 @@ class ImageDownloadPipeline(ImagesPipeline):
 
 
     def get_media_requests(self, item, info):
-        for image_url in item['image_urls']:
-            yield scrapy.Request(image_url,headers = self.default_headers)
+        if item.__class__ == MeizituItem:
+            for image_url in item['image_urls']:
+                yield scrapy.Request(image_url,headers = self.default_headers)
 
     def item_completed(self, results, item, info):
-        image_paths = [x['path'] for ok, x in results if ok]
-        if not image_paths:
-            raise DropItem("Item contains no images")
-        item['image_paths'] = image_paths
-        return item
+        if item.__class__ == MeizituItem:
+            image_paths = [x['path'] for ok, x in results if ok]
+            if not image_paths:
+                raise DropItem("Item contains no images")
+            item['image_paths'] = image_paths
+            return item
+
+# http://blog.csdn.net/yancey_blog/article/details/53895821
+# 保存数据库操作
+class ProxyDBPipeline(object):
+    def __init__(self):
+        self.conn = pymysql.connect(host = settings.MYSQL_HOST,
+                                    db = settings.MYSQL_DBNAME,
+                                    user=settings.MYSQL_USER,
+                                    password = settings.MYSQL_PASSWD,
+                                    charset='utf8',
+                                    use_unicode = True)
+        self.cursor = self.conn.cursor()
+
+    def process_item(self,item,spider):
+        if item.__class__ == XiciItem:
+            try:
+                print('-------------proxy start to save db------------------')
+                sql = 'insert into proxy(scheme,ip,port) value(%s,%s,%s) '
+                print(sql)
+                self.cursor.execute(sql,(item['scheme'],str(item['ip']),item['port']))
+                self.conn.commit()
+                print('-----------save sucess-------------')
+            except Exception as error:
+                print('---error &s----- '%(error))
+            return item
